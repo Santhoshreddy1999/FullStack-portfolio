@@ -14,9 +14,11 @@ import {
 } from "lucide-react";
 import { GitHubIcon } from "@/components/ui/brand-icons";
 import { PROJECT_BY_SLUG, PROJECTS } from "@/data/projects";
+import { PROJECT_CODE_BLUEPRINTS } from "@/data/projectBlueprints";
 import { PROFILE } from "@/config/profile";
 import { ProjectArtwork } from "@/components/projects/ProjectArtwork";
 import { ProjectDiagram } from "@/components/projects/ProjectDiagram";
+import { CodeBlueprintViewer } from "@/components/projects/CodeBlueprintViewer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -53,6 +55,7 @@ export default async function ProjectCaseStudyPage({
   const prevProject =
     PROJECTS[(currentIdx - 1 + PROJECTS.length) % PROJECTS.length];
   const nextProject = PROJECTS[(currentIdx + 1) % PROJECTS.length];
+  const codeBlueprint = PROJECT_CODE_BLUEPRINTS[project.slug];
 
   return (
     <div className="min-h-screen bg-[#07080D] text-[#F5F7FF]">
@@ -268,6 +271,17 @@ export default async function ProjectCaseStudyPage({
             ))}
           </div>
         </section>
+
+        {/* Reference Implementation Blueprint Code */}
+        {codeBlueprint && (
+          <section className="mt-12">
+            <div className="mb-4 flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-[#45E4FF]">
+              <Layers className="h-4 w-4" />
+              07 // Reference Implementation Pattern
+            </div>
+            <CodeBlueprintViewer blueprint={codeBlueprint} />
+          </section>
+        )}
 
         {/* Prev / Next Case Study Navigation */}
         <nav

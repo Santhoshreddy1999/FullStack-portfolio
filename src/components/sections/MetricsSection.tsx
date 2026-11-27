@@ -13,6 +13,7 @@ import { PROJECTS } from "@/data/projects";
 import { ARCHITECTURE_BLUEPRINTS } from "@/data/architectures";
 import { ENGINEERING_CAPABILITIES } from "@/data/capabilities";
 import { SectionHeader } from "@/components/layout/SectionHeader";
+import { SpotlightCard } from "@/components/ui/spotlight-card";
 
 function AnimatedCounter({
   value,
@@ -122,9 +123,10 @@ export function MetricsSection() {
         {/* Animated Counters Grid */}
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {verifiedMetrics.map((metric) => (
-            <div
+            <SpotlightCard
               key={metric.label}
-              className="glass-panel glass-panel-hover relative overflow-hidden rounded-2xl p-6"
+              spotlightColor={`${metric.accent}24`}
+              className="p-6"
             >
               <div
                 aria-hidden="true"
@@ -143,7 +145,7 @@ export function MetricsSection() {
               <p className="mt-3 text-xs leading-relaxed text-[#969BB0]">
                 {metric.detail}
               </p>
-            </div>
+            </SpotlightCard>
           ))}
         </div>
 

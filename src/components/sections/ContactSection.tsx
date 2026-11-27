@@ -11,7 +11,7 @@ import {
   Send,
 } from "lucide-react";
 import { GitHubIcon, LinkedInIcon } from "@/components/ui/brand-icons";
-import { PROFILE } from "@/config/profile";
+import { useProfile } from "@/context/ProfileContext";
 import { SectionHeader } from "@/components/layout/SectionHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,6 +23,7 @@ const ClosingOrbCanvas = dynamic(
 );
 
 export function ContactSection() {
+  const { profile } = useProfile();
   const [copied, setCopied] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -52,7 +53,7 @@ export function ContactSection() {
 
   const handleCopyEmail = async () => {
     try {
-      await navigator.clipboard.writeText(PROFILE.email);
+      await navigator.clipboard.writeText(profile.email);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
@@ -104,9 +105,9 @@ export function ContactSection() {
   };
 
   const availabilityDot =
-    PROFILE.availability.status === "open"
+    profile.availability.status === "open"
       ? "bg-[#34D399]"
-      : PROFILE.availability.status === "selective"
+      : profile.availability.status === "selective"
         ? "bg-[#FF9B62]"
         : "bg-[#969BB0]";
 
@@ -117,7 +118,7 @@ export function ContactSection() {
           index="10"
           eyebrow="Contact & Collaboration"
           title="HAVE A COMPLEX PROBLEM? LET'S ENGINEER THE SOLUTION."
-          description={PROFILE.availability.details}
+          description={profile.availability.details}
         />
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
@@ -129,7 +130,7 @@ export function ContactSection() {
                   className={`h-2.5 w-2.5 rounded-full ${availabilityDot} animate-pulse`}
                 />
                 <span className="font-mono text-xs uppercase tracking-wider text-[#F5F7FF]">
-                  {PROFILE.availability.label}
+                  {profile.availability.label}
                 </span>
               </div>
 
@@ -138,10 +139,10 @@ export function ContactSection() {
                   <div className="flex items-center gap-3 overflow-hidden">
                     <Mail className="h-4 w-4 shrink-0 text-[#5B8CFF]" />
                     <a
-                      href={`mailto:${PROFILE.email}`}
+                      href={`mailto:${profile.email}`}
                       className="truncate font-mono text-xs text-[#F5F7FF] hover:text-[#45E4FF]"
                     >
-                      {PROFILE.email}
+                      {profile.email}
                     </a>
                   </div>
                   <button
@@ -166,14 +167,14 @@ export function ContactSection() {
 
                 <div className="flex items-center gap-3 rounded-xl border border-white/[0.08] bg-[#0B0E17] px-4 py-3 font-mono text-xs text-[#969BB0]">
                   <MapPin className="h-4 w-4 shrink-0 text-[#45E4FF]" />
-                  <span>{PROFILE.location}</span>
+                  <span>{profile.location}</span>
                 </div>
               </div>
 
               <div className="mt-5 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
                 <Button variant="secondary" size="sm" asChild>
                   <a
-                    href={PROFILE.social.linkedin}
+                    href={profile.social.linkedin}
                     target="_blank"
                     rel="noreferrer"
                   >
@@ -183,7 +184,7 @@ export function ContactSection() {
                 </Button>
                 <Button variant="secondary" size="sm" asChild>
                   <a
-                    href={PROFILE.social.github}
+                    href={profile.social.github}
                     target="_blank"
                     rel="noreferrer"
                   >
@@ -193,8 +194,8 @@ export function ContactSection() {
                 </Button>
                 <Button variant="cyan" size="sm" asChild>
                   <a
-                    href={PROFILE.resume.pdfPath}
-                    download={PROFILE.resume.downloadFilename}
+                    href={profile.resume.pdfPath}
+                    download={profile.resume.downloadFilename}
                   >
                     <Download className="h-3.5 w-3.5" />
                     Resume
@@ -342,7 +343,7 @@ export function ContactSection() {
                 <p className="font-mono text-[11px] text-[#969BB0]">
                   Prefer direct email?{" "}
                   <a
-                    href={`mailto:${PROFILE.email}`}
+                    href={`mailto:${profile.email}`}
                     className="text-[#45E4FF] hover:underline"
                   >
                     Open mail client

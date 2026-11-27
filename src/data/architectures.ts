@@ -19,6 +19,13 @@ export interface ArchEdge {
   bidirectional?: boolean;
 }
 
+export interface ChaosScenario {
+  degradedNodeId: string;
+  fallbackNodeId: string;
+  faultTitle: string;
+  mitigation: string;
+}
+
 export interface ArchitectureBlueprint {
   id: string;
   title: string;
@@ -27,6 +34,7 @@ export interface ArchitectureBlueprint {
   accent: string;
   summary: string;
   traceSteps: string[];
+  chaos: ChaosScenario;
   nodes: ArchNode[];
   edges: ArchEdge[];
 }
@@ -49,6 +57,13 @@ export const ARCHITECTURE_BLUEPRINTS: ArchitectureBlueprint[] = [
       "approval",
       "observability",
     ],
+    chaos: {
+      degradedNodeId: "mcp-tools",
+      fallbackNodeId: "approval",
+      faultTitle: "MCP Tool Timeout & Downstream 503",
+      mitigation:
+        "Supervisor trips per-tool circuit breaker, persists checkpoint in PostgreSQL, and surfaces safe human-approval fallback without losing run state.",
+    },
     nodes: [
       {
         id: "ingress",
@@ -197,6 +212,13 @@ export const ARCHITECTURE_BLUEPRINTS: ArchitectureBlueprint[] = [
       "reranker",
       "synthesizer",
     ],
+    chaos: {
+      degradedNodeId: "reranker",
+      fallbackNodeId: "hybrid-index",
+      faultTitle: "Cross-Encoder GPU Inference Latency Spike (>800ms)",
+      mitigation:
+        "Pipeline bypasses cross-encoder after 450ms deadline and degrades cleanly to Reciprocal Rank Fusion (RRF) ordering from Qdrant + BM25 while preserving ACL filtering.",
+    },
     nodes: [
       {
         id: "ingestion",
@@ -319,6 +341,13 @@ export const ARCHITECTURE_BLUEPRINTS: ArchitectureBlueprint[] = [
     summary:
       "Domain-aligned Java/Spring Boot services behind an API Gateway with JWT security, Redis caching, isolated databases, and circuit breakers.",
     traceSteps: ["edge-gw", "auth-svc", "order-svc", "cache", "domain-db", "telemetry"],
+    chaos: {
+      degradedNodeId: "cache",
+      fallbackNodeId: "domain-db",
+      faultTitle: "Redis Cluster Primary Failover",
+      mitigation:
+        "Spring Cache-Aside circuit opens immediately; hot reads fall back to PostgreSQL read replica with single-flight stampede protection until Redis Sentinel promotes standby.",
+    },
     nodes: [
       {
         id: "edge-gw",
@@ -441,6 +470,13 @@ export const ARCHITECTURE_BLUEPRINTS: ArchitectureBlueprint[] = [
     summary:
       "Transactional outbox publishing, partitioned Kafka topics, idempotent consumer groups, tiered retry queues, and dead-letter recovery.",
     traceSteps: ["producer", "outbox", "kafka", "consumers", "retry-dlq", "projections"],
+    chaos: {
+      degradedNodeId: "consumers",
+      fallbackNodeId: "retry-dlq",
+      faultTitle: "Malformed Poison Payload in Partition #3",
+      mitigation:
+        "Idempotent consumer catches deserialization/business fault, commits offset cleanly so healthy traffic never stalls, and routes the event into tiered Retry & Dead-Letter Queue.",
+    },
     nodes: [
       {
         id: "producer",
@@ -563,6 +599,13 @@ export const ARCHITECTURE_BLUEPRINTS: ArchitectureBlueprint[] = [
     summary:
       "GitOps-driven Helm releases onto AKS/Kubernetes with NGINX ingress, autoscaling pods, network policies, and Prometheus/Grafana observability.",
     traceSteps: ["gitops", "ingress-k8s", "pods-web", "pods-api", "stateful", "prom-graf"],
+    chaos: {
+      degradedNodeId: "pods-api",
+      fallbackNodeId: "gitops",
+      faultTitle: "Canary Pod OOMCrashLoop After Release",
+      mitigation:
+        "Readiness probes immediately stop NGINX ingress routing to unhealthy pods while GitOps Helm controller auto-rolls back to the previous verified immutable digest.",
+    },
     nodes: [
       {
         id: "gitops",
@@ -687,6 +730,13 @@ export const ARCHITECTURE_BLUEPRINTS: ArchitectureBlueprint[] = [
     summary:
       "Multi-layer cloud-native reference blueprint uniting Edge CDN, containerized APIs, event-driven serverless functions, managed AI, and Terraform IaC.",
     traceSteps: ["cdn", "app-tier", "serverless", "ai-cloud", "data-lake", "iac-sec"],
+    chaos: {
+      degradedNodeId: "ai-cloud",
+      fallbackNodeId: "app-tier",
+      faultTitle: "Primary Region Azure AI 429 Quota Exhaustion",
+      mitigation:
+        "Containerized API tier trips circuit breaker and seamlessly fails over over private VNet endpoints to secondary region capacity with graceful token backoff.",
+    },
     nodes: [
       {
         id: "cdn",

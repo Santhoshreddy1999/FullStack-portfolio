@@ -3,7 +3,7 @@
 import React from "react";
 import { ArrowUp, Mail } from "lucide-react";
 import { GitHubIcon, LinkedInIcon } from "@/components/ui/brand-icons";
-import { PROFILE } from "@/config/profile";
+import { useProfile } from "@/context/ProfileContext";
 import { useScrollMotion } from "@/components/three/ScrollStateContext";
 
 const FOOTER_LINKS = [
@@ -20,6 +20,7 @@ const FOOTER_LINKS = [
 ];
 
 export function Footer() {
+  const { profile } = useProfile();
   const { scrollToSection } = useScrollMotion();
 
   return (
@@ -29,19 +30,19 @@ export function Footer() {
           <div className="md:col-span-5">
             <div className="flex items-center gap-3">
               <span className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#5B8CFF]/40 bg-[#5B8CFF]/12 font-display text-sm font-bold text-[#F5F7FF]">
-                {PROFILE.monogram}
+                {profile.monogram}
               </span>
               <div>
                 <p className="font-display text-base font-bold tracking-wider text-[#F5F7FF]">
-                  {PROFILE.name}
+                  {profile.name}
                 </p>
                 <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#969BB0]">
-                  {PROFILE.role}
+                  {profile.role}
                 </p>
               </div>
             </div>
             <p className="mt-4 max-w-md text-xs leading-relaxed text-[#969BB0]">
-              {PROFILE.brandHeadline} Engineered with Next.js, TypeScript,
+              {profile.brandHeadline} Engineered with Next.js, TypeScript,
               Three.js, React Three Fiber, Framer Motion, GSAP, and Lenis.
             </p>
           </div>
@@ -68,7 +69,7 @@ export function Footer() {
           <div className="flex flex-col items-start justify-between gap-4 md:col-span-2 md:items-end">
             <div className="flex items-center gap-2">
               <a
-                href={PROFILE.social.github}
+                href={profile.social.github}
                 target="_blank"
                 rel="noreferrer"
                 aria-label="GitHub"
@@ -77,7 +78,7 @@ export function Footer() {
                 <GitHubIcon className="h-4 w-4" />
               </a>
               <a
-                href={PROFILE.social.linkedin}
+                href={profile.social.linkedin}
                 target="_blank"
                 rel="noreferrer"
                 aria-label="LinkedIn"
@@ -86,7 +87,7 @@ export function Footer() {
                 <LinkedInIcon className="h-4 w-4" />
               </a>
               <a
-                href={`mailto:${PROFILE.email}`}
+                href={`mailto:${profile.email}`}
                 aria-label="Email"
                 className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/[0.03] text-[#969BB0] transition-colors hover:border-[#45E4FF]/50 hover:text-[#F5F7FF]"
               >
@@ -107,7 +108,7 @@ export function Footer() {
 
         <div className="mt-10 flex flex-col items-center justify-between gap-2 border-t border-white/[0.06] pt-6 font-mono text-[11px] text-[#969BB0] sm:flex-row">
           <span>
-            © {new Date().getFullYear()} {PROFILE.name}. Personal details
+            © {new Date().getFullYear()} {profile.name}. Personal details
             configured in src/config/profile.ts.
           </span>
           <span>Accessible · Reduced-Motion Aware · Responsive</span>

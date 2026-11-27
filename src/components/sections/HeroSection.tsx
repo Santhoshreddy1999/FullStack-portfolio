@@ -11,7 +11,7 @@ import {
   Sparkles,
   Terminal,
 } from "lucide-react";
-import { PROFILE } from "@/config/profile";
+import { useProfile } from "@/context/ProfileContext";
 import { useScrollMotion } from "@/components/three/ScrollStateContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -51,6 +51,7 @@ const TELEMETRY_EVENTS = [
 ];
 
 export function HeroSection() {
+  const { profile, setStudioOpen } = useProfile();
   const { scrollToSection } = useScrollMotion();
   const [activeTick, setActiveTick] = useState(0);
 
@@ -77,10 +78,10 @@ export function HeroSection() {
           >
             <Badge variant="cyan" className="py-1 px-3">
               <span className="h-1.5 w-1.5 rounded-full bg-[#45E4FF] animate-pulse" />
-              {PROFILE.availability.label}
+              {profile.availability.label}
             </Badge>
             <Badge variant="muted" className="py-1 px-3">
-              {PROFILE.yearsOfExperience} Years Engineering Experience
+              {profile.yearsOfExperience} Years Engineering Experience
             </Badge>
           </motion.div>
 
@@ -95,12 +96,16 @@ export function HeroSection() {
               01 //
             </span>
             <span className="font-display text-lg font-bold tracking-[0.22em] text-[#F5F7FF] sm:text-xl">
-              {PROFILE.name}
+              {profile.name}
             </span>
-            {PROFILE.isIdentityPlaceholder && (
-              <span className="hidden rounded border border-white/10 bg-white/[0.03] px-2 py-0.5 font-mono text-[10px] text-[#969BB0] sm:inline-block">
-                src/config/profile.ts
-              </span>
+            {profile.isIdentityPlaceholder && (
+              <button
+                type="button"
+                onClick={() => setStudioOpen(true)}
+                className="hidden cursor-pointer rounded border border-[#9B6BFF]/35 bg-[#9B6BFF]/10 px-2 py-0.5 font-mono text-[10px] text-[#D2BAFF] transition-colors hover:border-[#45E4FF] hover:text-[#F5F7FF] sm:inline-block"
+              >
+                Personalize Live
+              </button>
             )}
           </motion.div>
 
@@ -110,7 +115,7 @@ export function HeroSection() {
             transition={{ duration: 0.6, delay: 0.14 }}
             className="mb-5 font-mono text-xs uppercase tracking-[0.22em] text-[#969BB0] sm:text-sm"
           >
-            {PROFILE.role}
+            {profile.role}
           </motion.p>
 
           {/* Cinematic Hero Headline */}
@@ -131,7 +136,7 @@ export function HeroSection() {
             transition={{ duration: 0.65, delay: 0.3 }}
             className="mt-6 max-w-2xl text-base leading-relaxed text-[#969BB0] sm:text-lg"
           >
-            {PROFILE.heroSupportingCopy}
+            {profile.heroSupportingCopy}
           </motion.p>
 
           {/* Core Positioning Sub-banner */}
@@ -141,7 +146,7 @@ export function HeroSection() {
             transition={{ duration: 0.6, delay: 0.36 }}
             className="mt-4 border-l-2 border-[#5B8CFF]/60 pl-4 font-mono text-xs tracking-wider text-[#C7D4FF] sm:text-[13px]"
           >
-            {PROFILE.brandHeadline}
+            {profile.brandHeadline}
           </motion.p>
 
           {/* Primary CTAs */}
@@ -164,6 +169,16 @@ export function HeroSection() {
             <Button
               variant="secondary"
               size="lg"
+              onClick={() => scrollToSection("ai-lab")}
+              data-cursor="AI LAB"
+            >
+              <Sparkles className="h-4 w-4 text-[#9B6BFF]" />
+              Try AI Lab
+            </Button>
+
+            <Button
+              variant="secondary"
+              size="lg"
               onClick={() => scrollToSection("contact")}
               data-cursor="CONTACT"
             >
@@ -173,8 +188,8 @@ export function HeroSection() {
 
             <Button variant="outline" size="lg" asChild>
               <a
-                href={PROFILE.resume.pdfPath}
-                download={PROFILE.resume.downloadFilename}
+                href={profile.resume.pdfPath}
+                download={profile.resume.downloadFilename}
                 data-cursor="PDF"
               >
                 <Download className="h-4 w-4 text-[#45E4FF]" />
@@ -190,7 +205,7 @@ export function HeroSection() {
             transition={{ duration: 0.7, delay: 0.52 }}
             className="mt-9 flex flex-wrap gap-2"
           >
-            {PROFILE.coreIdentity.map((pillar) => (
+            {profile.coreIdentity.map((pillar) => (
               <span
                 key={pillar}
                 className="rounded-md border border-white/[0.08] bg-[#10121B]/75 px-2.5 py-1 font-mono text-[11px] text-[#969BB0]"

@@ -24,6 +24,7 @@ import {
 } from "@/data/technologies";
 import { PROJECT_BY_SLUG } from "@/data/projects";
 import { SectionHeader } from "@/components/layout/SectionHeader";
+import { useVisualSettings } from "@/components/three/VisualSettingsContext";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -52,6 +53,20 @@ export function TechGalaxySection() {
   const [selectedTech, setSelectedTech] = useState<TechnologyItem>(
     TECH_BY_ID.get("langgraph") ?? TECHNOLOGIES[0]
   );
+  const { selectedTechIdExternal, clearSelectedTechExternal } =
+    useVisualSettings();
+
+  useEffect(() => {
+    if (!selectedTechIdExternal) return;
+    const found = TECH_BY_ID.get(selectedTechIdExternal);
+    if (found) {
+      setSelectedTech(found);
+      setActiveCategory("all");
+      setActiveProficiency("all");
+      setSearchQuery("");
+    }
+    clearSelectedTechExternal();
+  }, [selectedTechIdExternal, clearSelectedTechExternal]);
 
   // Lazy-mount WebGL canvas only when section enters viewport vicinity
   const canvasHostRef = useRef<HTMLDivElement>(null);

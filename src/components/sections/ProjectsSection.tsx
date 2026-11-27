@@ -21,6 +21,7 @@ import {
 import { SectionHeader } from "@/components/layout/SectionHeader";
 import { ProjectArtwork } from "@/components/projects/ProjectArtwork";
 import { ProjectDiagram } from "@/components/projects/ProjectDiagram";
+import { SpotlightCard } from "@/components/ui/spotlight-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -118,6 +119,70 @@ export function ProjectsSection() {
           </div>
         </div>
 
+        {/* Flagship Spotlight Banner for 01 NEXUS AI when viewing All */}
+        {activeDomain === "all" && !search.trim() && PROJECTS[0] && (
+          <SpotlightCard
+            spotlightColor="rgba(155, 107, 255, 0.2)"
+            className="mb-8 overflow-hidden rounded-3xl"
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-12">
+              <Link
+                href={`/projects/${PROJECTS[0].slug}`}
+                className="block lg:col-span-6"
+                data-cursor="FLAGSHIP"
+              >
+                <ProjectArtwork
+                  project={PROJECTS[0]}
+                  className="h-64 w-full lg:h-full lg:min-h-[340px]"
+                />
+              </Link>
+              <div className="flex flex-col justify-between p-6 sm:p-8 lg:col-span-6">
+                <div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Badge variant="violet">Flagship Blueprint · PRJ-01</Badge>
+                    <Badge variant="cyan">{PROJECTS[0].status}</Badge>
+                  </div>
+                  <h3 className="mt-3 font-display text-3xl font-bold text-[#F5F7FF]">
+                    {PROJECTS[0].title}
+                  </h3>
+                  <p className="mt-1 text-sm font-medium text-[#C7D4FF]">
+                    {PROJECTS[0].subtitle}
+                  </p>
+                  <p className="mt-4 text-sm leading-relaxed text-[#969BB0]">
+                    {PROJECTS[0].architectureOverview}
+                  </p>
+                  <div className="mt-5 flex flex-wrap gap-1.5">
+                    {PROJECTS[0].stack.map((tech) => (
+                      <span
+                        key={tech}
+                        className="rounded-md border border-white/10 bg-[#0B0E17] px-2.5 py-1 font-mono text-[11px] text-[#C7D4FF]"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-white/10 pt-5">
+                  <Button variant="primary" size="md" asChild>
+                    <Link href={`/projects/${PROJECTS[0].slug}`}>
+                      Explore Full Case Study
+                      <ArrowUpRight className="h-4 w-4" />
+                    </Link>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="md"
+                    onClick={() => setPreviewProject(PROJECTS[0])}
+                  >
+                    <Eye className="h-4 w-4 text-[#45E4FF]" />
+                    Inspect Topology
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </SpotlightCard>
+        )}
+
         {/* 15 Projects Grid */}
         {filteredProjects.length === 0 ? (
           <div className="glass-panel rounded-2xl p-12 text-center">
@@ -131,14 +196,19 @@ export function ProjectsSection() {
         ) : (
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {filteredProjects.map((project, idx) => (
-              <motion.article
+              <motion.div
                 key={project.slug}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.45, delay: (idx % 3) * 0.05 }}
-                className="group glass-panel glass-panel-hover flex flex-col overflow-hidden rounded-2xl"
+                className="h-full"
               >
+              <SpotlightCard
+                spotlightColor={`${project.accent}24`}
+                className="group flex h-full flex-col overflow-hidden rounded-2xl"
+              >
+                <article className="flex h-full flex-col">
                 {/* Cover Artwork */}
                 <Link
                   href={`/projects/${project.slug}`}
@@ -264,7 +334,9 @@ export function ProjectsSection() {
                     </div>
                   </div>
                 </div>
-              </motion.article>
+                </article>
+              </SpotlightCard>
+              </motion.div>
             ))}
           </div>
         )}

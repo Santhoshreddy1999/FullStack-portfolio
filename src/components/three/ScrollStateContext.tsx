@@ -39,6 +39,7 @@ const SECTION_IDS = [
   "tech-galaxy",
   "projects",
   "architecture-lab",
+  "ai-lab",
   "journey",
   "metrics",
   "github",

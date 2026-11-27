@@ -3,14 +3,16 @@
 import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowUpRight, Camera, Compass, MapPin, ShieldCheck } from "lucide-react";
-import { PROFILE } from "@/config/profile";
+import { ArrowUpRight, Camera, Compass, MapPin, ShieldCheck, Upload } from "lucide-react";
+import { useProfile } from "@/context/ProfileContext";
 import { SectionHeader } from "@/components/layout/SectionHeader";
 import { useScrollMotion } from "@/components/three/ScrollStateContext";
 import { Badge } from "@/components/ui/badge";
 
 function PortraitFrame() {
-  const hasPhoto = Boolean(PROFILE.photo.src);
+  const { profile, setStudioOpen } = useProfile();
+  const hasPhoto = Boolean(profile.photo.src);
+  const isBlobPreview = Boolean(profile.photo.src?.startsWith("blob:"));
 
   return (
     <div className="relative">
@@ -22,18 +24,36 @@ function PortraitFrame() {
 
       <div className="glass-panel relative overflow-hidden rounded-3xl p-3">
         <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl border border-white/10 bg-[#0A0D16]">
-          {hasPhoto && PROFILE.photo.src ? (
+          {hasPhoto && profile.photo.src ? (
             <>
-              <Image
-                src={PROFILE.photo.src}
-                alt={PROFILE.photo.alt}
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 420px"
-                className="object-cover"
-                style={{ objectPosition: PROFILE.photo.objectPosition }}
-              />
+              {isBlobPreview ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={profile.photo.src}
+                  alt={profile.photo.alt}
+                  className="h-full w-full object-cover"
+                  style={{ objectPosition: profile.photo.objectPosition }}
+                />
+              ) : (
+                <Image
+                  src={profile.photo.src}
+                  alt={profile.photo.alt}
+                  fill
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 420px"
+                  className="object-cover"
+                  style={{ objectPosition: profile.photo.objectPosition }}
+                />
+              )}
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#07080D]/80 via-transparent to-[#5B8CFF]/10" />
+              <button
+                type="button"
+                onClick={() => setStudioOpen(true)}
+                className="absolute bottom-3 right-3 z-20 inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/20 bg-[#07080D]/80 px-2.5 py-1.5 font-mono text-[10px] text-[#F5F7FF] backdrop-blur-md transition-colors hover:border-[#45E4FF]"
+              >
+                <Camera className="h-3 w-3 text-[#45E4FF]" />
+                Adjust Crop
+              </button>
             </>
           ) : (
             /* Architectural Editorial Portrait Placeholder (Never fabricates a fake human face) */
@@ -90,25 +110,35 @@ function PortraitFrame() {
                     />
                   </svg>
                   <span className="absolute font-display text-4xl font-bold tracking-[0.16em] text-gradient-brand">
-                    {PROFILE.monogram}
+                    {profile.monogram}
                   </span>
                 </div>
 
                 <p className="mt-5 font-display text-lg font-semibold text-[#F5F7FF]">
-                  {PROFILE.name}
+                  {profile.name}
                 </p>
                 <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.18em] text-[#45E4FF]">
                   5 Years · Full Stack &amp; AI Systems
                 </p>
               </div>
 
-              {/* Clean photo configuration guide */}
+              {/* Clean photo configuration guide + instant local preview button */}
               <div className="relative z-10 rounded-xl border border-white/10 bg-[#07080D]/80 p-3.5 backdrop-blur-md">
-                <p className="font-mono text-[10px] uppercase tracking-wider text-[#45E4FF]">
-                  Add Your Real Photograph
-                </p>
-                <p className="mt-1 text-xs leading-relaxed text-[#969BB0]">
-                  Place your portrait in{" "}
+                <div className="flex items-center justify-between gap-2">
+                  <p className="font-mono text-[10px] uppercase tracking-wider text-[#45E4FF]">
+                    Add Your Real Photograph
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setStudioOpen(true)}
+                    className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-[#5B8CFF]/45 bg-[#5B8CFF]/15 px-2 py-1 font-mono text-[10px] text-[#F5F7FF] transition-colors hover:bg-[#5B8CFF]/30"
+                  >
+                    <Upload className="h-3 w-3 text-[#45E4FF]" />
+                    Preview Photo
+                  </button>
+                </div>
+                <p className="mt-1.5 text-xs leading-relaxed text-[#969BB0]">
+                  Drop a photo in{" "}
                   <code className="text-[#F5F7FF]">public/images/profile.jpg</code>{" "}
                   and set{" "}
                   <code className="text-[#F5F7FF]">photo.src</code> in{" "}
@@ -141,7 +171,7 @@ function PortraitFrame() {
         <div className="mt-3 flex flex-wrap items-center justify-between gap-2 px-2 py-1 font-mono text-[11px] text-[#969BB0]">
           <span className="inline-flex items-center gap-1.5">
             <MapPin className="h-3.5 w-3.5 text-[#5B8CFF]" />
-            {PROFILE.location}
+            {profile.location}
           </span>
           <span className="inline-flex items-center gap-1.5 text-[#45E4FF]">
             <ShieldCheck className="h-3.5 w-3.5" />
@@ -154,6 +184,7 @@ function PortraitFrame() {
 }
 
 export function AboutSection() {
+  const { profile } = useProfile();
   const { scrollToSection } = useScrollMotion();
 
   return (
@@ -161,9 +192,9 @@ export function AboutSection() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeader
           index="02"
-          eyebrow={PROFILE.about.eyebrow}
+          eyebrow={profile.about.eyebrow}
           title="Engineering Depth Across Every Layer of the Stack"
-          description={PROFILE.supportingStatement}
+          description={profile.supportingStatement}
         />
 
         <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-12 lg:gap-12">
@@ -189,18 +220,18 @@ export function AboutSection() {
             <div className="glass-panel rounded-2xl p-6 sm:p-8">
               <div className="mb-4 flex flex-wrap items-center gap-2">
                 <Badge variant="blue">
-                  {PROFILE.yearsOfExperience} Years Professional Experience
+                  {profile.yearsOfExperience} Years Professional Experience
                 </Badge>
                 <Badge variant="violet">AI &amp; Agentic Specialization</Badge>
                 <Badge variant="cyan">Cloud &amp; Enterprise Scale</Badge>
               </div>
 
               <h3 className="font-display text-2xl font-semibold leading-snug text-[#F5F7FF] sm:text-3xl">
-                {PROFILE.about.lead}
+                {profile.about.lead}
               </h3>
 
               <div className="mt-5 space-y-4 text-sm leading-relaxed text-[#969BB0] sm:text-base">
-                {PROFILE.about.paragraphs.map((paragraph, i) => (
+                {profile.about.paragraphs.map((paragraph, i) => (
                   <p key={i}>{paragraph}</p>
                 ))}
               </div>
@@ -210,11 +241,11 @@ export function AboutSection() {
             <div>
               <div className="mb-4 flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-[#45E4FF]">
                 <Compass className="h-4 w-4" />
-                {PROFILE.about.philosophy.title}
+                {profile.about.philosophy.title}
               </div>
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                {PROFILE.about.philosophy.principles.map((item, idx) => (
+                {profile.about.philosophy.principles.map((item, idx) => (
                   <div
                     key={item.label}
                     className="glass-panel glass-panel-hover rounded-xl p-5"
@@ -249,7 +280,7 @@ export function AboutSection() {
                 </button>
               </div>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
-                {PROFILE.experienceTimeline.map((stage) => (
+                {profile.experienceTimeline.map((stage) => (
                   <button
                     key={stage.id}
                     type="button"

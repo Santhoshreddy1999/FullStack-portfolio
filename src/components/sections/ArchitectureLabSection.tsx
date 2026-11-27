@@ -3,11 +3,14 @@
 import React, { useEffect, useMemo, useState } from "react";
 import {
   Activity,
+  AlertTriangle,
   Cpu,
   Pause,
   Play,
   ShieldAlert,
+  ShieldCheck,
   TrendingUp,
+  Zap,
 } from "lucide-react";
 import {
   ARCHITECTURE_BLUEPRINTS,
@@ -30,11 +33,13 @@ export function ArchitectureLabSection() {
     blueprint.nodes[0].id
   );
   const [isSimulating, setIsSimulating] = useState(true);
+  const [chaosActive, setChaosActive] = useState(false);
   const [traceIdx, setTraceIdx] = useState(0);
 
-  // Reset selected node and trace when switching diagrams
+  // Reset selected node, chaos mode, and trace when switching diagrams
   useEffect(() => {
     setSelectedNodeId(blueprint.nodes[0].id);
+    setChaosActive(false);
     setTraceIdx(0);
   }, [blueprint]);
 
@@ -85,24 +90,45 @@ export function ArchitectureLabSection() {
               ))}
             </TabsList>
 
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setIsSimulating((prev) => !prev)}
-              className="self-start lg:self-auto"
-            >
-              {isSimulating ? (
-                <>
-                  <Pause className="h-3.5 w-3.5 text-[#45E4FF]" />
-                  Pause Signal Trace
-                </>
-              ) : (
-                <>
-                  <Play className="h-3.5 w-3.5 text-[#45E4FF]" />
-                  Simulate Signal Trace
-                </>
-              )}
-            </Button>
+            <div className="flex flex-wrap items-center gap-2 self-start lg:self-auto">
+              <Button
+                variant={chaosActive ? "cyan" : "outline"}
+                size="sm"
+                onClick={() => {
+                  const next = !chaosActive;
+                  setChaosActive(next);
+                  if (next) {
+                    setSelectedNodeId(blueprint.chaos.degradedNodeId);
+                  }
+                }}
+                className={
+                  chaosActive
+                    ? "border-[#FF9B62]/65 bg-[#FF9B62]/15 text-[#FFB68A] hover:bg-[#FF9B62]/25"
+                    : ""
+                }
+              >
+                <Zap className="h-3.5 w-3.5 text-[#FF9B62]" />
+                {chaosActive ? "Clear Chaos Fault" : "Inject Chaos Fault"}
+              </Button>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsSimulating((prev) => !prev)}
+              >
+                {isSimulating ? (
+                  <>
+                    <Pause className="h-3.5 w-3.5 text-[#45E4FF]" />
+                    Pause Trace
+                  </>
+                ) : (
+                  <>
+                    <Play className="h-3.5 w-3.5 text-[#45E4FF]" />
+                    Simulate Trace
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
         </Tabs>
 
@@ -132,6 +158,26 @@ export function ArchitectureLabSection() {
             <p className="mb-5 text-sm leading-relaxed text-[#969BB0]">
               {blueprint.summary}
             </p>
+
+            {chaosActive && (
+              <div className="mb-4 flex flex-col gap-2 rounded-2xl border border-[#FF9B62]/45 bg-[#FF9B62]/10 p-4 sm:flex-row sm:items-start sm:justify-between">
+                <div className="flex items-start gap-2.5">
+                  <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-[#FF9B62]" />
+                  <div>
+                    <p className="font-mono text-xs font-semibold uppercase tracking-wider text-[#FF9B62]">
+                      Chaos Fault Active: {blueprint.chaos.faultTitle}
+                    </p>
+                    <p className="mt-1 text-xs leading-relaxed text-[#FFD7BF]">
+                      {blueprint.chaos.mitigation}
+                    </p>
+                  </div>
+                </div>
+                <span className="inline-flex shrink-0 items-center gap-1 rounded-full border border-[#34D399]/45 bg-[#34D399]/15 px-2.5 py-1 font-mono text-[10px] text-[#34D399]">
+                  <ShieldCheck className="h-3 w-3" />
+                  Resilient Fallback
+                </span>
+              </div>
+            )}
 
             {/* Interactive SVG Architecture Stage */}
             <div className="overflow-x-auto rounded-2xl border border-white/[0.08] bg-[#070910] p-2">
@@ -245,6 +291,20 @@ export function ArchitectureLabSection() {
                   const isSelected = node.id === selectedNodeId;
                   const isPulsing =
                     isSimulating && node.id === activeTraceNodeId;
+                  const isFaulted =
+                    chaosActive && node.id === blueprint.chaos.degradedNodeId;
+                  const isFallback =
+                    chaosActive && node.id === blueprint.chaos.fallbackNodeId;
+
+                  const strokeColor = isFaulted
+                    ? "#FF9B62"
+                    : isFallback
+                      ? "#34D399"
+                      : isSelected
+                        ? node.accent
+                        : isPulsing
+                          ? "#45E4FF"
+                          : "rgba(245,247,255,0.16)";
 
                   return (
                     <g
@@ -262,7 +322,7 @@ export function ArchitectureLabSection() {
                         }
                       }}
                     >
-                      {isPulsing && (
+                      {(isPulsing || isFaulted || isFallback) && (
                         <rect
                           x="-5"
                           y="-5"
@@ -270,9 +330,15 @@ export function ArchitectureLabSection() {
                           height="86"
                           rx="16"
                           fill="none"
-                          stroke="#45E4FF"
-                          strokeWidth="1.5"
-                          strokeOpacity="0.65"
+                          stroke={
+                            isFaulted
+                              ? "#FF9B62"
+                              : isFallback
+                                ? "#34D399"
+                                : "#45E4FF"
+                          }
+                          strokeWidth="1.8"
+                          strokeOpacity="0.8"
                           className="animate-subtle-pulse"
                         />
                       )}
@@ -280,33 +346,53 @@ export function ArchitectureLabSection() {
                         width="172"
                         height="76"
                         rx="14"
-                        fill={isSelected ? "#151C32" : "#0D101B"}
-                        stroke={
-                          isSelected
-                            ? node.accent
-                            : isPulsing
-                              ? "#45E4FF"
-                              : "rgba(245,247,255,0.16)"
+                        fill={
+                          isFaulted
+                            ? "#241414"
+                            : isFallback
+                              ? "#0D201A"
+                              : isSelected
+                                ? "#151C32"
+                                : "#0D101B"
                         }
-                        strokeWidth={isSelected ? 2.2 : 1.2}
+                        stroke={strokeColor}
+                        strokeWidth={
+                          isFaulted || isFallback || isSelected ? 2.2 : 1.2
+                        }
                       />
                       <rect
                         x="10"
                         y="10"
-                        width="58"
+                        width={isFaulted || isFallback ? "92" : "58"}
                         height="15"
                         rx="4"
-                        fill={`${node.accent}22`}
+                        fill={
+                          isFaulted
+                            ? "rgba(255,155,98,0.22)"
+                            : isFallback
+                              ? "rgba(52,211,153,0.22)"
+                              : `${node.accent}22`
+                        }
                       />
                       <text
-                        x="39"
+                        x={isFaulted || isFallback ? "56" : "39"}
                         y="20.5"
                         textAnchor="middle"
-                        fill={node.accent}
+                        fill={
+                          isFaulted
+                            ? "#FF9B62"
+                            : isFallback
+                              ? "#34D399"
+                              : node.accent
+                        }
                         fontSize="8.5"
                         fontFamily="var(--font-jetbrains-mono), monospace"
                       >
-                        {node.layer.toUpperCase()}
+                        {isFaulted
+                          ? "FAULT INJECTED"
+                          : isFallback
+                            ? "FALLBACK ACTIVE"
+                            : node.layer.toUpperCase()}
                       </text>
                       <text
                         x="12"
