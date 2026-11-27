@@ -1,0 +1,45 @@
+%PDF-1.4
+1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj
+2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj
+3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >> endobj
+4 0 obj << /Length 1308 >> stream
+BT
+/F1 11 Tf
+50 750 Td
+16 TL
+(FULL STACK ENGINEER | AI ENGINEER | SYSTEM ARCHITECT) Tj T*
+(Experience: 5 Years  |  Editable Resume Placeholder Template) Tj T*
+(------------------------------------------------------------------------) Tj T*
+(NOTE: Replace /public/resume.pdf with your real resume PDF and update) Tj T*
+(src/config/profile.ts with your personal details, experience, and links.) Tj T*
+() Tj T*
+(CORE POSITIONING) Tj T*
+(Engineering scalable digital experiences, intelligent AI systems, and) Tj T*
+(enterprise-grade applications combining full-stack engineering, modern) Tj T*
+(AI architectures, and cloud-native technologies.) Tj T*
+() Tj T*
+(CORE CAPABILITIES) Tj T*
+(- Full Stack Engineering \(TypeScript, React, Next.js, Angular, Three.js\)) Tj T*
+(- AI & Agentic Systems \(LangGraph, LangChain, LlamaIndex, RAG, MCP\)) Tj T*
+(- Backend Architecture \(Java, Spring Boot, Python, FastAPI, Node.js\)) Tj T*
+(- Cloud & DevOps \(Azure, AWS, Docker, Kubernetes, Terraform, CI/CD\)) Tj T*
+(- Distributed Systems \(Kafka, Redis, Event-Driven Architecture\)) Tj T*
+(- Enterprise System Design \(Clean/Hexagonal Architecture, DDD, Security\)) Tj T*
+() Tj T*
+(CONTACT PLACEHOLDERS \(Update in src/config/profile.ts\)) Tj T*
+(Email: your.email@example.com  |  GitHub: github.com/your-username) Tj T*
+ET
+endstream endobj
+5 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000001601 00000 n 
+trailer << /Size 6 /Root 1 0 R >>
+startxref
+1671
+%%EOF

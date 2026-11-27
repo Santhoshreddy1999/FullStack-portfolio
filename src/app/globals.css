@@ -1,0 +1,169 @@
+@import "tailwindcss";
+
+:root {
+  --bg-primary: #07080d;
+  --bg-secondary: #10121b;
+  --bg-elevated: #151824;
+  --text-primary: #f5f7ff;
+  --text-secondary: #969bb0;
+  --accent-blue: #5b8cff;
+  --accent-violet: #9b6bff;
+  --accent-cyan: #45e4ff;
+  --accent-orange: #ff9b62;
+  --border-subtle: rgba(245, 247, 255, 0.08);
+  --border-strong: rgba(245, 247, 255, 0.16);
+}
+
+@theme inline {
+  --color-background: var(--bg-primary);
+  --color-foreground: var(--text-primary);
+  --color-surface: var(--bg-secondary);
+  --color-elevated: var(--bg-elevated);
+  --color-muted: var(--text-secondary);
+  --color-electric: var(--accent-blue);
+  --color-violet: var(--accent-violet);
+  --color-cyan: var(--accent-cyan);
+  --color-amber: var(--accent-orange);
+  --font-display: var(--font-space-grotesk);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-jetbrains-mono);
+}
+
+html {
+  background-color: #07080d;
+  color: #f5f7ff;
+  color-scheme: dark;
+  scroll-behavior: auto;
+}
+
+body {
+  background-color: #07080d;
+  color: #f5f7ff;
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+.font-display {
+  font-family: var(--font-space-grotesk), system-ui, sans-serif;
+}
+
+code,
+pre,
+.font-mono {
+  font-family: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, monospace;
+}
+
+/* Precision scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #07080d;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(150, 155, 176, 0.24);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(91, 140, 255, 0.55);
+}
+
+/* Architectural subtle background grid */
+.bg-engineering-grid {
+  background-image:
+    linear-gradient(to right, rgba(245, 247, 255, 0.032) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(245, 247, 255, 0.032) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
+/* Refined glass panel */
+.glass-panel {
+  background: linear-gradient(
+    180deg,
+    rgba(21, 24, 36, 0.78) 0%,
+    rgba(16, 18, 27, 0.68) 100%
+  );
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(245, 247, 255, 0.08);
+}
+
+.glass-panel-hover {
+  transition:
+    border-color 240ms ease,
+    transform 240ms ease,
+    box-shadow 240ms ease,
+    background-color 240ms ease;
+}
+
+.glass-panel-hover:hover {
+  border-color: rgba(91, 140, 255, 0.34);
+  box-shadow: 0 20px 60px -24px rgba(91, 140, 255, 0.22);
+}
+
+/* Editorial hairline gradient */
+.text-gradient-brand {
+  background: linear-gradient(120deg, #f5f7ff 10%, #5b8cff 52%, #45e4ff 92%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.text-gradient-violet {
+  background: linear-gradient(120deg, #f5f7ff 15%, #9b6bff 60%, #5b8cff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Focus visibility for keyboard accessibility */
+:focus-visible {
+  outline: 2px solid #45e4ff;
+  outline-offset: 2px;
+}
+
+/* Animated signal dash for architecture diagrams */
+@keyframes flowDash {
+  to {
+    stroke-dashoffset: -48;
+  }
+}
+
+.animate-flow-dash {
+  animation: flowDash 1.8s linear infinite;
+}
+
+@keyframes subtlePulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate-subtle-pulse {
+  animation: subtlePulse 2.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
