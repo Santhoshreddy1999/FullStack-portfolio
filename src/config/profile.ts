@@ -105,8 +105,8 @@ export const PROFILE: ProfileConfig = {
   location: "City, Country (Editable in src/config/profile.ts)",
   email: "your.email@example.com",
   social: {
-    github: "https://github.com/your-username",
-    githubUsername: null,
+    github: "https://github.com/Santhoshreddy1999",
+    githubUsername: "Santhoshreddy1999",
     linkedin: "https://www.linkedin.com/in/your-profile",
   },
   resume: {
